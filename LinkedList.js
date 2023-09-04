@@ -103,5 +103,3 @@ class LinkedList {
     return this.toString(next, listStrings);
   }
 }
-
-let list = new LinkedList();
