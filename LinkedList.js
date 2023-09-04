@@ -5,85 +5,103 @@ class LinkedList {
     this.Head = { nextNode: null };
   }
 
-  append(value) {
-    for (const property in this) {
-      if (this[property].nextNode == null) {
-        this[property].nextNode = value;
-      }
+  append(value, next = this.Head) {
+    if (next.nextNode == null) {
+      return (next.nextNode = new Node(value));
     }
 
-    this[value] = new Node(value);
+    next = next.nextNode;
+
+    return this.append(value, next);
   }
 
   prepend(value) {
-    // STOPPED HERE
-    // YOU CAN TRY TO ACCESS THE FIRST INDEX [0] AND ASSIGN TO IT THE NEW NODE AND THE TRY TO RECREATE THE HEAD OR SOMETHING
+    let newNode = new Node(value);
+    newNode.nextNode = this.Head.nextNode;
+    this.Head.nextNode = newNode;
   }
 
-  size() {
-    return Object.keys(this).length - 1;
+  size(n = 0, next = this.Head) {
+    if (next.nextNode == null) {
+      return n;
+    }
+
+    next = next.nextNode;
+    return this.size(n + 1, next);
   }
 
   head() {
-    let firstNode = null;
-    for (const property in this) {
-      if (property == this.Head.nextNode) {
-        firstNode = this[property];
-      }
+    return this.Head.nextNode;
+  }
+
+  tail(next = this.Head) {
+    if (next.nextNode == null) {
+      return next;
+    }
+    next = next.nextNode;
+    return this.tail(next);
+  }
+
+  at(index, counter = 0, next = this.Head) {
+    if (next == null) {
+      return null;
     }
 
-    return firstNode;
-  }
-
-  tail() {
-    for (const property in this) {
-      if (this[property].nextNode == null) {
-        return this[property];
-      }
-    }
-  }
-
-  at(index) {
-    return this[Object.keys(this)[index + 1]];
-  }
-
-  pop() {
-    this[Object.keys(this)[Object.keys(this).length - 2]].nextNode = null;
-    delete this[Object.keys(this)[Object.keys(this).length - 1]];
-  }
-
-  contains(value) {
-    let exists = false;
-    for (const property in this) {
-      if (this[property].value === value) {
-        exists = true;
-      }
+    if (index == counter) {
+      return next.nextNode;
     }
 
-    return exists;
+    next = next.nextNode;
+    return this.at(index, counter + 1, next);
   }
 
-  find(value) {
-    let counter = -1;
-    for (const property in this) {
-      if (this[property].value === value) {
-        return counter;
-      }
+  pop(next = this.Head) {
+    if (next.nextNode.nextNode == null) {
+      next.nextNode = null;
+      return;
+    }
+    next = next.nextNode;
+    return this.pop(next);
+  }
 
-      counter++;
+  contains(value, next = this.Head) {
+    if (next == null) {
+      return false;
+    }
+    if (next.value == value) {
+      return true;
     }
 
-    return null;
+    next = next.nextNode;
+
+    return this.contains(value, next);
   }
 
-  //   toString() {}
+  find(value, counter = 0, next = this.Head.nextNode) {
+    if (next == null) {
+      return null;
+    }
+
+    if (next.value == value) {
+      return counter;
+    }
+
+    next = next.nextNode;
+    return this.find(value, counter + 1, next);
+  }
+
+  toString(next = this.Head.nextNode, listStrings = "") {
+    if (next == null) {
+      listStrings += null;
+      return listStrings;
+    }
+
+    listStrings += `(${next.value}) -> `;
+
+    next = next.nextNode;
+
+    return this.toString(next, listStrings);
+  }
 }
 
 let list = new LinkedList();
-list.append("Hamza");
-list.append("Aicha");
-list.append("Soukaina");
-list.append("Imad");
-list.append("Zabouzi");
-
-console.log(list.prepend());
